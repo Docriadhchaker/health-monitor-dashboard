@@ -1,0 +1,1 @@
+# ECDC RSS source adapter

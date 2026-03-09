@@ -1,0 +1,55 @@
+---
+description: HealthMonitor project — source of truth, architecture, and implementation rules
+alwaysApply: true
+---
+
+# HealthMonitor Project Instructions
+
+## Source of truth
+The Markdown documents in this repository define the product and implementation requirements.
+Use them as the authoritative specification.
+
+## Document precedence
+1. Product Requirements Document
+2. Technology Stack
+3. Database Schema Design
+4. User Flow
+5. Project Structure
+6. Styling Guidelines
+
+## Product scope
+Build only the MVP defined in the documents.
+Do not add out-of-scope features unless explicitly requested.
+
+## Locked architecture
+- Frontend: React + TypeScript + Vite
+- Map: MapLibre GL JS
+- Backend: FastAPI + Python 3.12
+- Database: PostgreSQL 16 + PostGIS
+- Cache/queue: Redis
+- Async jobs: Celery + Celery Beat
+- Search: PostgreSQL full-text search + pg_trgm
+- Translation: DeepL API
+- No Elasticsearch in MVP
+- No Node.js backend
+
+## Working style
+- Work in small, reviewable increments.
+- Prefer creating a plan before generating large amounts of code.
+- Keep folder structure aligned with the Project Structure document.
+- Keep schema aligned with the Database Schema Design document.
+- Keep UI aligned with the Styling Guidelines document.
+- Keep UX aligned with the User Flow document.
+
+## Implementation rules
+- Use typed interfaces and validation schemas.
+- Avoid placeholder architecture that conflicts with the docs.
+- Do not silently rename core domain concepts.
+- Keep summaries descriptive and neutral in the UI.
+- Preserve original source titles in their original language.
+- Treat preprints as a distinct layer.
+- Keep MVP at 5 layers exactly as documented.
+
+## Delivery rules
+- When asked to implement, first identify affected files and planned changes.
+- After implementation, list created/edited files and remaining next steps.

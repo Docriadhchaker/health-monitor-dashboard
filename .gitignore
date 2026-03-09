@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Build / dist
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs and coverage
+*.log
+coverage/
+.coverage
+htmlcov/
+
+# Database
+*.db
+*.sqlite3
+
+# Alembic
+# Keep migrations; ignore generated scripts if any
+
+# Notebooks checkpoints
+.notebooks/
+*.ipynb_checkpoints
+
+# Secrets and config with secrets
+**/secrets.json
+**/credentials.json

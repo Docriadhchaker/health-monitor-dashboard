@@ -1,0 +1,1 @@
+# openFDA pharmacovigilance source adapter
