@@ -2,6 +2,16 @@
 
 A prototype dashboard that aggregates public health signals (WHO, ECDC, etc.) and displays them on a global map.
 
+## Screenshots
+
+Les images du dossier `docs/screenshots/` s’affichent ici automatiquement. Il suffit d’y déposer :
+- **`dashboard-map.png`** — vue carte + panneau (clusters, filtres)
+- **`events-panel.png`** — panneau « Events at this location »
+
+| Vue carte et panneau | Panneau événements |
+|----------------------|--------------------|
+| ![Dashboard map](docs/screenshots/dashboard-map.png) | ![Events panel](docs/screenshots/events-panel.png) |
+
 ## Features
 
 - Global map with event clustering
