@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { MapView } from '@/features/map-explorer/MapView'
 import { LeftRail } from '@/components/panels/LeftRail'
+import { ClusterEventsPanel } from '@/components/panels/ClusterEventsPanel'
 import { EventCard } from '@/components/event-card/EventCard'
 import { fetchEventById, fetchEvents } from '@/services/eventsApi'
 import type { EventsFilters } from '@/types/event'
@@ -15,6 +16,8 @@ interface MapExplorerState {
   events: import('@/types/event').EventListItem[]
   selectedEventId: string | null
   setSelectedEventId: (id: string | null) => void
+  selectedClusterEventIds: string[] | null
+  setSelectedClusterEventIds: (ids: string[] | null) => void
   selectedEvent: import('@/types/event').EventDetail | undefined
 }
 
@@ -34,6 +37,7 @@ export function MapExplorerProvider({ children }: { children: React.ReactNode })
     country_code: null,
   })
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null)
+  const [selectedClusterEventIds, setSelectedClusterEventIds] = useState<string[] | null>(null)
 
   const { data: layersData } = useQuery({
     queryKey: ['layers'],
@@ -64,6 +68,8 @@ export function MapExplorerProvider({ children }: { children: React.ReactNode })
     events,
     selectedEventId,
     setSelectedEventId,
+    selectedClusterEventIds,
+    setSelectedClusterEventIds,
     selectedEvent,
   }
 
@@ -75,9 +81,33 @@ export function MapExplorerProvider({ children }: { children: React.ReactNode })
 }
 
 export function MapExplorerContent() {
-  const { events, selectedEventId, setSelectedEventId, selectedEvent } = useMapExplorer()
-  const handleSelect = useCallback((id: string) => setSelectedEventId(id), [setSelectedEventId])
+  const {
+    events,
+    selectedEventId,
+    setSelectedEventId,
+    selectedClusterEventIds,
+    setSelectedClusterEventIds,
+    selectedEvent,
+  } = useMapExplorer()
+  const handleSelect = useCallback(
+    (id: string) => {
+      setSelectedEventId(id)
+      setSelectedClusterEventIds(null)
+    },
+    [setSelectedEventId, setSelectedClusterEventIds]
+  )
   const handleClose = useCallback(() => setSelectedEventId(null), [setSelectedEventId])
+  const handleSelectCluster = useCallback(
+    (ids: string[]) => {
+      setSelectedClusterEventIds(ids)
+      setSelectedEventId(null)
+    },
+    [setSelectedClusterEventIds, setSelectedEventId]
+  )
+  const handleCloseClusterPanel = useCallback(() => setSelectedClusterEventIds(null), [setSelectedClusterEventIds])
+  const clusterEvents = selectedClusterEventIds?.length
+    ? events.filter((e) => selectedClusterEventIds.includes(e.id))
+    : []
 
   return (
     <div className="relative h-full w-full">
@@ -85,7 +115,15 @@ export function MapExplorerContent() {
         events={events}
         selectedEventId={selectedEventId}
         onSelectEvent={handleSelect}
+        onSelectCluster={handleSelectCluster}
       />
+      {selectedClusterEventIds != null && selectedClusterEventIds.length > 0 && (
+        <ClusterEventsPanel
+          events={clusterEvents}
+          onSelectEvent={handleSelect}
+          onClose={handleCloseClusterPanel}
+        />
+      )}
       {selectedEvent && <EventCard event={selectedEvent} onClose={handleClose} />}
     </div>
   )

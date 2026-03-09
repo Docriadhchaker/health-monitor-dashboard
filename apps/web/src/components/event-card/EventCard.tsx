@@ -11,9 +11,54 @@ function formatDate(iso: string | null): string {
   return d.toLocaleDateString(undefined, { dateStyle: 'medium' })
 }
 
+function formatRelative(iso: string | null): string {
+  if (!iso) return ''
+  const d = new Date(iso)
+  const now = new Date()
+  const diffMs = now.getTime() - d.getTime()
+  const diffMins = Math.floor(diffMs / 60000)
+  const diffHours = Math.floor(diffMs / 3600000)
+  const diffDays = Math.floor(diffMs / 86400000)
+  if (diffMins < 60) return `${diffMins} minutes ago`
+  if (diffHours < 24) return `${diffHours} hours ago`
+  if (diffDays === 1) return '1 day ago'
+  if (diffDays < 30) return `${diffDays} days ago`
+  if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`
+  return `${Math.floor(diffDays / 365)} years ago`
+}
+
+function stripHtmlToPlain(text: string): string {
+  if (!text) return ''
+  const div = document.createElement('div')
+  div.innerHTML = text
+  return (div.textContent ?? div.innerText ?? '').replace(/\s+/g, ' ').trim()
+}
+
+function getDisplayDate(event: EventDetail): { label: string; text: string; relative: string } {
+  const published = event.source_published_at
+  const ingested = event.ingested_at
+  if (published) {
+    return {
+      label: 'Date',
+      text: formatDate(published),
+      relative: formatRelative(published),
+    }
+  }
+  if (ingested) {
+    return {
+      label: 'Ingested',
+      text: formatDate(ingested),
+      relative: formatRelative(ingested),
+    }
+  }
+  return { label: 'Date', text: '—', relative: '' }
+}
+
 export function EventCard({ event, onClose }: EventCardProps) {
   const location = [event.location_name, event.country_code].filter(Boolean).join(', ') || '—'
-  const summary = event.summary_en || event.translations[0]?.translated_summary || ''
+  const rawSummary = event.summary_en || event.translations[0]?.translated_summary || ''
+  const summary = stripHtmlToPlain(rawSummary)
+  const displayDate = getDisplayDate(event)
 
   return (
     <div
@@ -24,7 +69,7 @@ export function EventCard({ event, onClose }: EventCardProps) {
     >
       <div className="flex items-start justify-between gap-2">
         <h2 className="text-[18px] font-semibold leading-tight text-[var(--color-text-primary)] line-clamp-2">
-          {event.title}
+          {stripHtmlToPlain(event.title)}
         </h2>
         <button
           type="button"
@@ -74,9 +119,14 @@ export function EventCard({ event, onClose }: EventCardProps) {
       )}
 
       <dl className="mt-3 space-y-1 text-sm">
-        <div className="flex gap-2">
-          <dt className="text-[var(--color-text-muted)]">Date</dt>
-          <dd>{formatDate(event.source_published_at)}</dd>
+        <div className="flex flex-col gap-0.5">
+          <div className="flex gap-2">
+            <dt className="text-[var(--color-text-muted)]">{displayDate.label}</dt>
+            <dd>{displayDate.text}</dd>
+          </div>
+          {displayDate.relative && (
+            <dd className="text-xs text-[var(--color-text-muted)]">{displayDate.relative}</dd>
+          )}
         </div>
         <div className="flex gap-2">
           <dt className="text-[var(--color-text-muted)]">Location</dt>

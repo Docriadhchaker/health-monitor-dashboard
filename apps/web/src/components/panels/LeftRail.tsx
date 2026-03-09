@@ -3,7 +3,6 @@ import type { EventsFilters } from '@/types/event'
 const REGION_PRESETS = ['World', 'Americas', 'MENA', 'Europe', 'Asia', 'Africa', 'Oceania'] as const
 
 const TIME_WINDOWS = [
-  { value: '', label: 'All time' },
   { value: '24h', label: 'Last 24 hours' },
   { value: '7d', label: 'Last 7 days' },
   { value: '30d', label: 'Last 30 days' },
@@ -95,17 +94,17 @@ export function LeftRail({ filters, setFilters, layers }: LeftRailProps) {
           Time
         </h2>
         <select
-          value={filters.time_window ?? ''}
+          value={filters.time_window ?? '7d'}
           onChange={(e) =>
             setFilters({
               ...filters,
-              time_window: e.target.value || null,
+              time_window: e.target.value as '24h' | '7d' | '30d',
             })
           }
           className="w-full rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm text-[var(--color-text-primary)]"
         >
           {TIME_WINDOWS.map(({ value, label }) => (
-            <option key={value || 'all'} value={value}>
+            <option key={value} value={value}>
               {label}
             </option>
           ))}

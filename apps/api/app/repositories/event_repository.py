@@ -80,7 +80,7 @@ def list_events(
     if time_window:
         cutoff = _time_cutoff(time_window)
         if cutoff:
-            q = q.filter(or_(Event.source_published_at >= cutoff, Event.ingested_at >= cutoff))
+            q = q.filter(Event.source_published_at >= cutoff)
     if source_class_id:
         q = q.filter(SourceProvider.source_class_id == source_class_id)
     if trust_tier_id:
@@ -157,6 +157,7 @@ def list_events(
                 "lon": lon,
                 "summary_en": event.summary_en,
                 "geographic_scope": event.geographic_scope,
+                "geo_precision": event.geo_precision,
             }
         )
     return out, total
@@ -221,11 +222,13 @@ def get_event_by_id(db: Session, event_id: UUID) -> dict | None:
         "source_name": provider.name if provider else "",
         "source_url": source_url,
         "source_published_at": event.source_published_at,
+        "ingested_at": event.ingested_at,
         "event_occurred_at": event.event_occurred_at,
         "country_code": event.country_code,
         "region_code": event.region_code,
         "location_name": event.location_name,
         "geographic_scope": event.geographic_scope,
+        "geo_precision": event.geo_precision,
         "summary_en": event.summary_en,
         "relevance_label": event.relevance_label,
         "specialty_names": specialty_names,

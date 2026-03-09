@@ -6,7 +6,7 @@ function buildParams(filters: EventsFilters & { bbox?: { minLon: number; minLat:
   const p = new URLSearchParams()
   if (filters.layer_ids?.length) filters.layer_ids.forEach((id) => p.append('layer_ids', String(id)))
   if (filters.region_code) p.set('region_code', filters.region_code)
-  if (filters.time_window) p.set('time_window', filters.time_window)
+  p.set('time_window', filters.time_window ?? '7d')
   if (filters.country_code) p.set('country_code', filters.country_code)
   if (filters.bbox) {
     p.set('min_lon', String(filters.bbox.minLon))

@@ -20,6 +20,7 @@ export interface EventListItem {
   lon: number | null
   summary_en: string | null
   geographic_scope: string
+  geo_precision: string | null
 }
 
 export interface EventTranslationOut {
@@ -43,11 +44,13 @@ export interface EventDetail {
   source_name: string
   source_url: string | null
   source_published_at: string | null
+  ingested_at: string | null
   event_occurred_at: string | null
   country_code: string | null
   region_code: string | null
   location_name: string | null
   geographic_scope: string
+  geo_precision: string | null
   summary_en: string | null
   relevance_label: string | null
   specialty_names: string[]

@@ -14,6 +14,12 @@ migrate:
 seed:
 	cd apps/api && uv run python -m app.db.seed
 
+reset-events:
+	cd apps/api && uv run python -m app.ingestion.reset_events_and_raw
+
+ingest-who-ecdc:
+	cd apps/api && uv run python -m app.ingestion.run_who_ecdc
+
 run-api:
 	cd apps/api && uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 

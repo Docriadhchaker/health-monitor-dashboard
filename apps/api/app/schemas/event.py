@@ -45,6 +45,7 @@ class EventListItem(BaseModel):
     lon: float | None
     summary_en: str | None
     geographic_scope: str
+    geo_precision: str | None = None
 
     model_config = {"from_attributes": True}
 
@@ -72,11 +73,13 @@ class EventDetail(BaseModel):
     source_name: str
     source_url: str | None
     source_published_at: datetime | None
+    ingested_at: datetime | None = None
     event_occurred_at: datetime | None
     country_code: str | None
     region_code: str | None
     location_name: str | None
     geographic_scope: str
+    geo_precision: str | None = None
     summary_en: str | None
     relevance_label: str | None
     specialty_names: list[str] = Field(default_factory=list)

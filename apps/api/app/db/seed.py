@@ -146,23 +146,152 @@ PROVIDERS = [
     ("fda", "FDA Drug Safety", 4, 1, "https://www.fda.gov"),
 ]
 
-# (layer_code, provider_slug, title, summary_en, country_code, region_code, location_name, lon, lat, evidence_code, with_fr_translation)
-SAMPLE_EVENTS = [
-    ("PUB_HEALTH", "who", "Weekly cholera outbreak update — Eastern Mediterranean", "WHO reports an update on cholera cases in the Eastern Mediterranean region with case counts and affected countries.", "EG", "MENA", "Cairo", 31.2357, 30.0444, "SURVEILLANCE_REPORT", True),
-    ("PUB_HEALTH", "ecdc", "Seasonal influenza surveillance summary — Europe", "ECDC publishes the weekly influenza surveillance summary for the WHO European region.", None, "EUROPE", "Stockholm", 18.0686, 59.3293, "SURVEILLANCE_REPORT", False),
-    ("PUB_HEALTH", "who", "Dengue situation report — Americas", "WHO reports on the dengue situation in the Americas region.", "BR", "AMERICAS", "Brasília", -47.8825, -15.7942, "SURVEILLANCE_REPORT", True),
-    ("PUB_HEALTH", "ecdc", "COVID-19 variant update", "ECDC issues an update on SARS-CoV-2 variant circulation in the EU/EEA.", None, "EUROPE", "Brussels", 4.3517, 50.8503, "SURVEILLANCE_REPORT", False),
-    ("GUIDELINES", "who", "Updated guideline on tuberculosis treatment", "WHO releases an updated guideline on the treatment of drug-susceptible tuberculosis.", None, "WORLD", None, None, None, "GUIDELINE", True),
-    ("GUIDELINES", "ecdc", "Guidance on infection prevention in healthcare", "ECDC publishes guidance on infection prevention and control in healthcare settings.", None, "EUROPE", None, None, None, "GUIDELINE", False),
-    ("LITERATURE", "pubmed", "Meta-analysis of vaccine effectiveness against influenza", "A meta-analysis evaluates vaccine effectiveness against seasonal influenza in adults.", "US", "AMERICAS", "Bethesda", -77.1025, 38.9897, "PEER_REVIEWED_ARTICLE", False),
-    ("LITERATURE", "pubmed", "Cohort study on long COVID in European population", "A cohort study describes the prevalence of long COVID in a European population.", None, "EUROPE", "London", -0.1276, 51.5074, "PEER_REVIEWED_ARTICLE", True),
-    ("LITERATURE", "pubmed", "Randomized trial of new antiviral for respiratory infection", "A randomized controlled trial reports on the efficacy of a new antiviral for respiratory infection.", "JP", "ASIA", "Tokyo", 139.6917, 35.6892, "PEER_REVIEWED_ARTICLE", False),
-    ("PREPRINTS", "medrxiv", "Preprint: SARS-CoV-2 wastewater surveillance sensitivity", "A preprint presents a model for wastewater-based surveillance sensitivity for SARS-CoV-2.", "AU", "OCEANIA", "Sydney", 151.2093, -33.8688, "PREPRINT", True),
-    ("PREPRINTS", "medrxiv", "Preprint: Novel biomarker for sepsis outcome", "A preprint describes a novel biomarker associated with sepsis outcome in ICU patients.", "ZA", "AFRICA", "Cape Town", 18.4241, -33.9249, "PREPRINT", False),
-    ("PREPRINTS", "medrxiv", "Preprint: Vaccine hesitancy survey in MENA", "A preprint reports survey results on vaccine hesitancy in selected MENA countries.", "JO", "MENA", "Amman", 35.9300, 31.9454, "PREPRINT", False),
-    ("PHARMACOVIGILANCE", "fda", "Drug safety communication: label change for anticoagulant", "FDA announces a label change for an anticoagulant following postmarket data review.", "US", "AMERICAS", "Silver Spring", -76.9375, 38.9959, "REGULATORY_NOTICE", True),
-    ("PHARMACOVIGILANCE", "fda", "Recall: certain lots of sterile injectable", "FDA reports a recall of certain lots of a sterile injectable product due to particulate matter.", "US", "AMERICAS", None, None, None, "REGULATORY_NOTICE", False),
-    ("PHARMACOVIGILANCE", "ecdc", "Signal assessment: new adverse event for vaccine", "ECDC publishes a signal assessment for a potential adverse event following immunization.", None, "EUROPE", "Stockholm", 18.0686, 59.3293, "REGULATORY_NOTICE", False),
+# --- Curated real-source demo events (replaceable later by real ingestion) ---
+# One-to-one alignment: each source_url points to a single real page; title is that page's
+# exact title or a faithful short version; summary describes that exact document only.
+# source_published_at = real publication date of that source (no artificial "recent" dates).
+
+CURATED_DEMO_EVENTS = [
+    # Public Health / Surveillance — one specific document per event
+    {
+        "layer_code": "PUB_HEALTH",
+        "provider_slug": "who",
+        "title": "Data show marked increase in annual cholera deaths",
+        "summary_en": "WHO news item on 2023 global cholera statistics: 13% rise in cases and 71% rise in deaths; 45 countries reported cases; geographic shift with large increase in Africa.",
+        "source_url": "https://www.who.int/news/item/04-09-2024-data-show-marked-increase-in-annual-cholera-deaths",
+        "source_published_at": "2024-09-04",
+        "country_code": None,
+        "region_code": "WORLD",
+        "location_name": None,
+        "lon": None,
+        "lat": None,
+        "evidence_code": "SURVEILLANCE_REPORT",
+        "with_fr": True,
+    },
+    {
+        "layer_code": "PUB_HEALTH",
+        "provider_slug": "ecdc",
+        "title": "Zoonotic influenza - Annual Epidemiological Report 2024",
+        "summary_en": "ECDC annual report on zoonotic influenza in the EU/EEA for 2024: human infections with avian and swine influenza viruses reported by nine countries; no cases in EU/EEA in 2024.",
+        "source_url": "https://www.ecdc.europa.eu/en/publications-data/zoonotic-influenza-annual-epidemiological-report-2024",
+        "source_published_at": "2026-01-21",
+        "country_code": None,
+        "region_code": "EUROPE",
+        "location_name": "Stockholm",
+        "lon": 18.0686,
+        "lat": 59.3293,
+        "evidence_code": "SURVEILLANCE_REPORT",
+        "with_fr": False,
+    },
+    {
+        "layer_code": "PUB_HEALTH",
+        "provider_slug": "ecdc",
+        "title": "Measles - Annual Epidemiological Report for 2024",
+        "summary_en": "ECDC annual epidemiological report on measles in the EU/EEA for 2024: 35 212 cases reported, a ten-fold increase from 2023; return to seasonal pattern after 2021–2023.",
+        "source_url": "https://www.ecdc.europa.eu/en/publications-data/measles-annual-epidemiological-report-2024",
+        "source_published_at": "2025-04-28",
+        "country_code": None,
+        "region_code": "EUROPE",
+        "location_name": "Stockholm",
+        "lon": 18.0686,
+        "lat": 59.3293,
+        "evidence_code": "SURVEILLANCE_REPORT",
+        "with_fr": False,
+    },
+    # Guidelines — one specific publication per event
+    {
+        "layer_code": "GUIDELINES",
+        "provider_slug": "who",
+        "title": "WHO consolidated guidelines on tuberculosis. Module 4: treatment - drug-resistant tuberculosis treatment, 2022 update",
+        "summary_en": "WHO guideline on drug-resistant TB treatment: recommendations for 6-month BPaLM and 9-month all-oral regimens, monitoring, ART timing, and surgery; for use by Member States.",
+        "source_url": "https://www.who.int/publications/i/item/9789240063129",
+        "source_published_at": "2022-06-15",
+        "country_code": None,
+        "region_code": "WORLD",
+        "location_name": None,
+        "lon": None,
+        "lat": None,
+        "evidence_code": "GUIDELINE",
+        "with_fr": True,
+    },
+    # Scientific Literature — one article per event (title and summary match that article)
+    {
+        "layer_code": "LITERATURE",
+        "provider_slug": "pubmed",
+        "title": "Effectiveness of influenza vaccination to prevent severe disease: a systematic review and meta-analysis of test-negative design studies",
+        "summary_en": "Systematic review and meta-analysis of test-negative design studies evaluating influenza vaccine effectiveness against severe influenza outcomes.",
+        "source_url": "https://pubmed.ncbi.nlm.nih.gov/41093140/",
+        "source_published_at": "2024-03-01",
+        "country_code": "US",
+        "region_code": "AMERICAS",
+        "location_name": "Bethesda",
+        "lon": -77.1025,
+        "lat": 38.9897,
+        "evidence_code": "PEER_REVIEWED_ARTICLE",
+        "with_fr": False,
+    },
+    {
+        "layer_code": "LITERATURE",
+        "provider_slug": "pubmed",
+        "title": "Interim Estimates of 2024-2025 Seasonal Influenza Vaccine Effectiveness - Four Vaccine Effectiveness Networks, United States",
+        "summary_en": "Interim estimates of 2024-2025 seasonal influenza vaccine effectiveness from four US vaccine effectiveness networks, October 2024–February 2025.",
+        "source_url": "https://pubmed.ncbi.nlm.nih.gov/40014791/",
+        "source_published_at": "2025-02-15",
+        "country_code": "US",
+        "region_code": "AMERICAS",
+        "location_name": "Bethesda",
+        "lon": -77.1025,
+        "lat": 38.9897,
+        "evidence_code": "PEER_REVIEWED_ARTICLE",
+        "with_fr": True,
+    },
+    # Preprints — one preprint per event (title matches that preprint)
+    {
+        "layer_code": "PREPRINTS",
+        "provider_slug": "medrxiv",
+        "title": "National-scale surveillance of emerging SARS-CoV-2 variants in wastewater",
+        "summary_en": "Preprint: national-scale wastewater surveillance for emerging SARS-CoV-2 variants; methods and findings from the described study.",
+        "source_url": "https://www.medrxiv.org/content/10.1101/2022.01.14.21267633v1",
+        "source_published_at": "2022-01-14",
+        "country_code": None,
+        "region_code": "EUROPE",
+        "location_name": None,
+        "lon": None,
+        "lat": None,
+        "evidence_code": "PREPRINT",
+        "with_fr": False,
+    },
+    # Pharmacovigilance — one specific safety communication or decision per event
+    {
+        "layer_code": "PHARMACOVIGILANCE",
+        "provider_slug": "fda",
+        "title": "FDA Adds Warning About Rare Occurrence of Serious Liver Injury with Use of Veozah (fezolinetant) for Hot Flashes Due to Menopause",
+        "summary_en": "FDA Drug Safety Communication: boxed warning added for Veozah (fezolinetant) due to rare serious liver injury; recommends liver testing and discontinuation if injury occurs.",
+        "source_url": "https://www.fda.gov/safety/medical-product-safety-information/fda-adds-warning-about-rare-occurrence-serious-liver-injury-use-veozah-fezolinetant-hot-flashes-due",
+        "source_published_at": "2024-09-12",
+        "country_code": "US",
+        "region_code": "AMERICAS",
+        "location_name": "Silver Spring",
+        "lon": -76.9375,
+        "lat": 38.9959,
+        "evidence_code": "REGULATORY_NOTICE",
+        "with_fr": True,
+    },
+    {
+        "layer_code": "PHARMACOVIGILANCE",
+        "provider_slug": "fda",
+        "title": "FDA Requests Removal of Suicidal Behavior and Ideation Warning from Glucagon-Like Peptide-1 Receptor Agonist (GLP-1 RA) Medications",
+        "summary_en": "FDA requests removal of suicidal behavior and ideation warning from GLP-1 RA drug labels following review; patients should continue medication as prescribed and report concerns to providers.",
+        "source_url": "https://www.fda.gov/drugs/drug-safety-and-availability/fda-requests-removal-suicidal-behavior-and-ideation-warning-glucagon-peptide-1-receptor-agonist-glp",
+        "source_published_at": "2026-01-13",
+        "country_code": "US",
+        "region_code": "AMERICAS",
+        "location_name": "Silver Spring",
+        "lon": -76.9375,
+        "lat": 38.9959,
+        "evidence_code": "REGULATORY_NOTICE",
+        "with_fr": False,
+    },
 ]
 
 
@@ -196,6 +325,8 @@ def seed_providers_feeds_runs(db):
         providers[slug] = pid
     db.commit()
 
+    WHO_RSS = "https://www.afro.who.int/rss/featured-news.xml"  # WHO AFRO official fallback (global feed 404)
+    ECDC_RSS = "https://www.ecdc.europa.eu/en/taxonomy/term/1307/feed"
     for slug, name, sc_id, tt_id, _ in PROVIDERS:
         pid = providers[slug]
         layer_id = _id_by_code(db, Layer, "code", "PUB_HEALTH")
@@ -205,14 +336,15 @@ def seed_providers_feeds_runs(db):
             layer_id = _id_by_code(db, Layer, "code", "PREPRINTS")
         elif slug == "fda":
             layer_id = _id_by_code(db, Layer, "code", "PHARMACOVIGILANCE")
+        endpoint = WHO_RSS if slug == "who" else (ECDC_RSS if slug == "ecdc" else f"https://example.com/{slug}")
         fid = uuid.uuid4()
         db.add(
             SourceFeed(
                 id=fid,
                 provider_id=pid,
                 name=f"{name} feed",
-                feed_type="api",
-                endpoint_url=f"https://example.com/{slug}",
+                feed_type="rss" if slug in ("who", "ecdc") else "api",
+                endpoint_url=endpoint,
                 default_layer_id=layer_id or 1,
                 polling_interval_minutes=60,
                 is_active=True,
@@ -254,7 +386,32 @@ def seed_sample_events(db):
     for r in db.query(IngestionRun).all():
         run_by_feed[str(r.source_feed_id)] = r.id
 
-    for layer_code, prov_slug, title, summary_en, country_code, region_code, location_name, lon, lat, evidence_code, with_fr in SAMPLE_EVENTS:
+    for ev in CURATED_DEMO_EVENTS:
+        layer_code = ev["layer_code"]
+        prov_slug = ev["provider_slug"]
+        title = ev["title"]
+        summary_en = ev["summary_en"]
+        source_url = ev["source_url"]
+        published_at_str = ev.get("source_published_at")
+        published_at = None
+        if published_at_str:
+            try:
+                if "T" in str(published_at_str):
+                    published_at = datetime.fromisoformat(str(published_at_str).replace("Z", "+00:00"))
+                else:
+                    published_at = datetime.strptime(str(published_at_str), "%Y-%m-%d").replace(tzinfo=timezone.utc)
+                if published_at.tzinfo is None:
+                    published_at = published_at.replace(tzinfo=timezone.utc)
+            except (ValueError, TypeError):
+                published_at = None
+        country_code = ev["country_code"]
+        region_code = ev["region_code"]
+        location_name = ev["location_name"]
+        lon = ev["lon"]
+        lat = ev["lat"]
+        evidence_code = ev["evidence_code"]
+        with_fr = ev["with_fr"]
+
         provider_id = providers.get(prov_slug)
         if not provider_id:
             continue
@@ -270,9 +427,8 @@ def seed_sample_events(db):
             continue
 
         raw_id = uuid.uuid4()
-        url = f"https://example.com/source/{raw_id}"
-        payload = {"title": title, "url": url}
-        content_hash = hashlib.sha256(url.encode()).hexdigest()[:128]
+        payload = {"title": title, "url": source_url}
+        content_hash = hashlib.sha256(source_url.encode()).hexdigest()[:128]
         db.add(
             RawDocument(
                 id=raw_id,
@@ -280,7 +436,7 @@ def seed_sample_events(db):
                 source_feed_id=feed_id,
                 provider_id=provider_id,
                 original_title=title,
-                original_url=url,
+                original_url=source_url,
                 raw_payload_json=payload,
                 content_hash=content_hash,
                 parsing_status="parsed",
@@ -301,6 +457,7 @@ def seed_sample_events(db):
                 trust_tier_id=tt_id,
                 title=title,
                 summary_en=summary_en,
+                source_published_at=published_at,
                 geographic_scope="regional" if region_val else "global",
                 country_code=country_code,
                 region_code=region_val,
@@ -310,6 +467,7 @@ def seed_sample_events(db):
                 is_active=True,
             )
         )
+        db.flush()
         db.add(
             EventSourceLink(
                 id=uuid.uuid4(),
@@ -332,7 +490,7 @@ def seed_sample_events(db):
                 )
             )
     db.commit()
-    print("Seeded sample events.")
+    print("Seeded curated demo events.")
 
 
 def main() -> None:
