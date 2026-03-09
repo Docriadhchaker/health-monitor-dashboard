@@ -1,10 +1,10 @@
-# Captures d'écran
+# Screenshots
 
-Déposez vos images dans ce dossier avec **exactement** les noms suivants pour qu’elles s’affichent dans le README principal à la racine du projet :
+Place your images in this folder with **exactly** the following names so they appear in the main README at the project root:
 
-| Fichier à déposer | Rôle dans le README |
-|-------------------|----------------------|
-| `dashboard-map.png` | Vue carte mondiale + panneau (clusters, filtres) |
-| `events-panel.png` | Panneau « Events at this location » (liste groupée par date) |
+| File to add | Role in README |
+|-------------|----------------|
+| `dashboard-map.png` | Map view with event panel (clusters, filters) |
+| `events-panel.png` | "Events at this location" panel (list grouped by date) |
 
-Aucune modification du README n’est nécessaire : dès que ces fichiers sont présents ici, le README les affiche.
+No change to the main README is required: once these files are present here, the README will display them.
