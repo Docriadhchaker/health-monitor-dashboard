@@ -4,7 +4,6 @@ A prototype dashboard that aggregates public health signals (WHO, ECDC, etc.) an
 
 ## Screenshots
 
-Les images du dossier `docs/screenshots/` s’affichent ici automatiquement. Il suffit d’y déposer :
 - **`dashboard-map.png`** — vue carte + panneau (clusters, filtres)
 - **`events-panel.png`** — panneau « Events at this location »
 
